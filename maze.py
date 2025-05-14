@@ -18,6 +18,7 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self): 
         for i in range(self._num_cols):
@@ -56,20 +57,17 @@ class Maze:
         self._cells[i][j].visited = True
         while True:
             need_to_visit = []
-            if j > 0:
-                if not self._cells[i][j-1].visited:
+            if j > 0 and not self._cells[i][j - 1].visited:
                     need_to_visit.append((i, j-1))
-            if j < self._num_rows - 1:
-                if not self._cells[i][j+1].visited:
+            if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
                     need_to_visit.append((i, j+1))
-            if i > 0:
-                if not self._cells[i-1][j].visited:
+            if i > 0 and not self._cells[i - 1][j].visited:
                     need_to_visit.append((i-1, j))
-            if i < self._num_cols - 1:
-                if not self._cells[i+1][j].visited:
+            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
                     need_to_visit.append((i+1, j))
                     
-            if not need_to_visit:
+            if len(need_to_visit) == 0:
+                self._draw_cell(i,j)
                 return
             
             next_i, next_j = random.choice(need_to_visit)
@@ -87,3 +85,8 @@ class Maze:
                 self._cells[next_i][next_j].has_top_wall = False
 
             self._break_walls_r(next_i, next_j)
+
+    def _reset_cells_visited(self):
+        for col in self._cells:
+            for cell in col:
+                cell.visited = False
